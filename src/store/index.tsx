@@ -25,6 +25,7 @@ export const ContextWrapper: React.FC = (props) => {
             
             setStore({ ...currentStore });
         },
+        resetGame: () => setStore({ players: [], round: 0})
 	});
 	
 	return (

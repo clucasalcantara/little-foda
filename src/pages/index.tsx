@@ -22,6 +22,8 @@ const handleSubmitPlayers = () => {
     const { store, gameActions } = appContext;
 
     gameActions.nextRound(store);
+    
+    if(store.players.length < 2) return;
 
     router.push('/game');
   }
