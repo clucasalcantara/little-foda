@@ -1,7 +1,14 @@
 import type { AppProps } from 'next/app'
-// import { GameContextProvider } from '../context'
+
+import { ContextWrapper } from '../store';
+
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+  return (
+    <ContextWrapper>
+      <Component {...pageProps} />
+    </ContextWrapper>
+  )
 }
+
 export default MyApp

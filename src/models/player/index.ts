@@ -1,5 +1,5 @@
 interface PlayerInterface {
-  number: number;
+  id: string;
   name: string;
   goal: number;
 }

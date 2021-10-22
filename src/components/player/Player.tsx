@@ -1,40 +1,50 @@
-import { useContext, useState } from 'react';
-import { GameContext } from '../../context';
+import { useContext } from 'react';
+import { AppContext } from '../../store';
+
 import PlayerInterface from '../../models/player';
 
-interface PlayerProps{
-    indexPlayer: number
-}
+const Player = ({ id }: { id?: string }) => {
+    const { store, gameActions }: any = useContext(AppContext);
+    const currentPlayer = store.players.find((player: any) => player.id === id);
 
-const Player = (props: PlayerProps) => {
-    const { store, pushToList, addGoal } = useContext(GameContext);
-    const [currentPlayer] = useState(store.listPlayers[props.indexPlayer-1]);
-
+            
     const handleBlurName = (e: any) => {
-        const player: PlayerInterface  = {
+        const generatePlayerID = () => Math.floor((1 + Math.random()) * 32258)
+            .toString(16)
+            .substring(1)
+        
+        const player = {
             name: e.target.value, 
-            number: props.indexPlayer,
-            goal: 0
+            goal: 0,
+            id: generatePlayerID(),
         }
-        pushToList(player);
-    }
 
-    const handleGoal = (type: string) => currentPlayer && (type === '+' ? addGoal(props.indexPlayer - 1, currentPlayer.goal + 1) : addGoal(props.indexPlayer - 1, currentPlayer.goal + 1));
+        player.name && gameActions.addPlayer(store, player);
+    };
 
-    return (
-        <div>
-            {!currentPlayer  ? 
+    const handleGoal = (playerId: string, goal: number) => gameActions.handlePlayerGoal({ currentStore: store, playerId, goal: goal });
+    
+    const renderPlayerData = () => {
+        if (!id) return (
             <>
                 <label>Name</label>
-                <input type="text" placeholder={`Name Player ${props.indexPlayer}`} onBlur={handleBlurName} />
+                <input type="text" placeholder={`Player name`} onBlur={handleBlurName} />
             </>
-            :
+        )
+
+        return (
             <>
                 <label>{currentPlayer.name}</label>
-                <button onClick={() => handleGoal('-')}>-</button>
-                <h2 onClick={() => addGoal(props.indexPlayer, currentPlayer.goal + 5)}>{currentPlayer.goal}</h2>
-                <button onClick={() => handleGoal('+')}>+</button>
-            </>}
+                <button onClick={() => handleGoal(currentPlayer.id, currentPlayer.goal + 1)}>+</button>
+                <h2>{currentPlayer.goal}</h2>
+                <button onClick={() => handleGoal(currentPlayer.id, currentPlayer.goal - 1)}>-</button>
+            </>
+        )
+    }
+    
+    return (
+        <div>
+            {renderPlayerData()}
         </div>
     );
 }

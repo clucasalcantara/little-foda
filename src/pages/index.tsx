@@ -1,69 +1,44 @@
-import type { NextPage } from 'next'
 import { useContext, useState } from 'react';
+import { useRouter } from 'next/router'
+
+import type { NextPage } from 'next'
 
 import { Player } from '../components';
-import { GameContext } from '../context';
-import { useRound } from '../hooks';
+// import { useRound } from '../hooks';
 
-const generatePlayerSeats = (count: number, hasStarted: boolean) => Array(count).fill(0).map((player, index) => <Player key={index} indexPlayer={index+1} />)
+import { AppContext } from '../store';
 
-const Home: NextPage = () => {
-  const [ numberPlayers, setNumberPlayers ] = useState(2);
-  const { numberRound, handleNextRound, handleResetRound} = useRound();
-  const { store, resetList } = useContext(GameContext);
+const Home: NextPage = (props: any) => {
+  const router = useRouter();
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(2);
+  const appContext: any = useContext(AppContext);
 
-  const handleChangeNumberPlayers = (event: any) => {
-    setNumberPlayers(event.target.value);
+
+  const generatePlayerSeats = (count: number) => Array(count).fill(0).map((player, index) => (
+    <Player key={index} />
+  ));
+
+const handleSubmitPlayers = () => {
+    const { store, gameActions } = appContext;
+
+    gameActions.nextRound(store);
+
+    router.push('/game');
   }
 
-  const handlePlayerCount = (operation: string) => operation === '+' ? setNumberPlayers(numberPlayers + 1) : setNumberPlayers(numberPlayers - 1);
-
-  const handleSubmitPlayers = () => {
-    if(store.listPlayers.length < 1){
-      return;
-    }
-    handleNextRound();
-  }
-
-  const handleSubmitRounds = () => {
-    const total = store.listPlayers.map(value => value.goal).reduce((a, b) => a + b);
-    if(numberRound > 1 && numberRound == total){
-      return false
-    }
-    console.log("Iniciar", store.listPlayers);
-  }
-
-  const handleResetPlayers = () => {
-    handleResetRound();
-    resetList();
-    setNumberPlayers(2);
-  }
-  
   return (
     <>
-      {numberRound < 1 ? 
-      <>
-        <div>
-          <h1>How many players?</h1> 
-          {generatePlayerSeats(numberPlayers, numberRound > 1)}
-          <label>Number of players:</label>
-          <span>{numberPlayers}</span>
-          <button onClick={() => handlePlayerCount('+')}>More</button> 
-          <button onClick={() => handlePlayerCount('-')}>Less</button> 
-        </div>
-        <div>
-          <button type="submit" onClick={handleSubmitPlayers}>Start</button>
-        </div>
-      </>
-      : 
-      <>
-        <h1>Round {numberRound}</h1>
-        {generatePlayerSeats(numberPlayers, numberRound > 1)}
-        <button type="submit" onClick={handleResetPlayers}>Reset Game</button>
-        <button type="submit" onClick={handleSubmitRounds}>Save rounds</button>
-        <button type="submit" onClick={handleNextRound}>Next round</button>
-      </>
-      }
+      <div>
+        <h1>How many players?</h1> 
+        {generatePlayerSeats(numberOfPlayers)}
+        <label>Number of players: </label>
+        <span>{numberOfPlayers}</span>
+        <button onClick={() => setNumberOfPlayers(numberOfPlayers + 1)}>More</button> 
+        <button onClick={() => setNumberOfPlayers(numberOfPlayers - 1)}>Less</button> 
+      </div>
+      <div>
+        <button type="submit" onClick={handleSubmitPlayers}>Start</button>
+      </div>
     </>
   )
 }
