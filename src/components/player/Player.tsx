@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import { AppContext } from '../../store';
+import { v4 as uuidv4 } from 'uuid';
 
 import type { PlayerType } from './types';
 
@@ -9,14 +10,10 @@ const Player = ({ id }: { id?: string }) => {
 
             
     const handleBlurName = (e: any) => {
-        const generatePlayerID = () => Math.floor((1 + Math.random()) * 32258)
-            .toString(16)
-            .substring(1)
-        
         const player: PlayerType = {
             name: e.target.value, 
             goal: 0,
-            id: generatePlayerID(),
+            id: uuidv4(),
         }
 
         player.name && gameActions.addPlayer(store, player);
