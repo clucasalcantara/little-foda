@@ -5,7 +5,7 @@ import type { PlayerInterface } from './types';
 
 const Player = ({ id }: { id?: string }) => {
     const { store, gameActions }: any = useContext(AppContext);
-    const currentPlayer = store.players.find((player: any) => player.id === id);
+    const currentPlayer = store.players.find((player: PlayerInterface) => player.id === id);
 
             
     const handleBlurName = (e: any) => {
@@ -13,7 +13,7 @@ const Player = ({ id }: { id?: string }) => {
             .toString(16)
             .substring(1)
         
-        const player = {
+        const player: PlayerInterface = {
             name: e.target.value, 
             goal: 0,
             id: generatePlayerID(),
@@ -28,7 +28,7 @@ const Player = ({ id }: { id?: string }) => {
         if (!id) return (
             <>
                 <label>Name</label>
-                <input type="text" placeholder={`Player name`} onBlur={handleBlurName} />
+                <input type="text" placeholder={`Type the player name`} onBlur={handleBlurName} />
             </>
         )
 
