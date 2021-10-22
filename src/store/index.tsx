@@ -2,25 +2,27 @@ import { useState, createContext } from 'react';
 
 export const AppContext = createContext({})
 
+import type { StoreInterface, GameEngineInterface, GoalUpdateInterface } from './types';
+import { PlayerType } from '../components';
 
-export const ContextWrapper = (props: any) => {
-	const [store, setStore] = useState({
+export const ContextWrapper: React.FC = (props) => {
+	const [store, setStore] = useState<StoreInterface>({
 		players: [],
         round: 0,
 	});
 
-    const [gameActions] = useState({
-		addPlayer: (currentStore: any, player: any) => setStore({ ...currentStore, players: currentStore.players.concat(player) }),
+    const [gameActions] = useState<GameEngineInterface>({
+		addPlayer: (currentStore: StoreInterface, player: PlayerType) => setStore({ ...currentStore, players: currentStore.players.concat(player) }),
 		nextRound: (currentStore: any) => {
-            currentStore.players.map((player: any) => player.goal = 0);
+            currentStore.players.map((player: PlayerType) => player.goal = 0);
             setStore({ ...currentStore, round: currentStore.round += 1 })
         },
-        handlePlayerGoal: ({ currentStore, playerId, goal }: any) => {
-            const player = currentStore.players.find((player: any) => player.id === playerId);
-            player.goal = goal;
-
-            currentStore.players[playerId] = player;
-
+        handlePlayerGoal: ({ currentStore, playerId, goal }: GoalUpdateInterface) => {
+            const player: PlayerType | undefined =
+                currentStore.players.find((player: PlayerType) => player.id === playerId);
+            
+            if (player) player.goal = goal;
+            
             setStore({ ...currentStore });
         },
 	});
