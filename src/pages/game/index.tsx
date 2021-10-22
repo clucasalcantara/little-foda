@@ -1,10 +1,10 @@
 import { useContext } from 'react'
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router';
 
 import { Player } from '../../components';
 
 import { AppContext } from '../../store';
-import { useRouter } from 'next/router';
 
 const Game: NextPage = () => {
   const router = useRouter();
@@ -18,7 +18,11 @@ const Game: NextPage = () => {
     }
 
     const handleStartRound = () => {
-        const total = store.round && store.players.map((player: any) => player.goal).reduce((a: number, b: number) => a + b);
+        const total = (store.round && store.players) && 
+            store.players
+                .reduce(
+                    (acc: Number, player: any) => acc = acc + player.goal
+                , 0);
 
         if(store.round > 1 && store.round == total){
             return false
