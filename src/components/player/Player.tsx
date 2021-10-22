@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { AppContext } from '../../store';
 
-import PlayerInterface from '../../models/player';
+import type { PlayerInterface } from './types';
 
 const Player = ({ id }: { id?: string }) => {
     const { store, gameActions }: any = useContext(AppContext);
